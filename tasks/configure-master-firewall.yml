@@ -1,0 +1,25 @@
+# file: tasks/configure-master-firewall.yml
+
+- name: Test firewall for slaves
+  shell: "grep {{ item }} /etc/sysconfig/iptables"
+  register: test_grep
+  with_items: "{{ postgresql_streaming_slaves }}"
+
+- name: Open firewall for slaves
+  lineinfile:
+    destfile: "/etc/sysconfig/iptables"
+    line: "-A INPUT -p tcp -s {{ item.item }} --dport 5432 -j ACCEPT"
+    insertbefore: "-A INPUT -j DROP"
+  when: item.stdout != ""
+  with_items: "{{ test_grep.results }}"
+  become: yes
+
+#- name: Debug output of greps
+#  debug:
+#    msg: "item.item={{ item.item }}, item.stdout={{ item.stdout }}"
+#  with_items: "{{ test_grep.results }}"
+
+- name: Restart iptables
+  service:
+    name: "iptables"
+    state: "restarted"

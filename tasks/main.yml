@@ -7,6 +7,9 @@
   when: postgresql_is_install is defined and postgresql_is_install
   tags: [postgresql, postgresql-install]
 
+- include: configure-master-firewall.yml
+  when: postgresql_master_handle_firewall is defined and postgresql_master_handle_firewall and postgresql_is_master is defined and postgresql_is_master
+
 - include: configure-master.yml
   when: postgresql_is_master is defined and postgresql_is_master
   tags: [postgresql, postgresql-replication, postgresql-master]
