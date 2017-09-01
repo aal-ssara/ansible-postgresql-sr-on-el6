@@ -1,5 +1,7 @@
 # file: defaults/main.yml -- main variables
 
+postgresql_is_install: false
+
 # Basic settings
 postgresql_version: 9.4
 

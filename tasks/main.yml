@@ -1,0 +1,25 @@
+# file: tasks/main.yml
+
+- include_vars:
+    file: "../group_vars/os_{{ ansible_os_family }}.yml"
+
+- include: install.yml
+  when: postgresql_is_install is defined and postgresql_is_install
+  tags: [postgresql, postgresql-install]
+
+- include: configure-master.yml
+  when: postgresql_is_master is defined and postgresql_is_master
+  tags: [postgresql, postgresql-replication, postgresql-master]
+
+- include: users.yml
+  when: postgresql_is_master is defined and postgresql_is_master
+  tags: [postgresql, postgresql-replication, postgresql-master]
+
+- include: databases.yml
+  when: postgresql_is_master is defined and postgresql_is_master
+  tags: [postgresql, postgresql-replication, postgresql-master]
+
+- include: configure-slaves.yml
+  when: postgresql_is_slave is defined and postgresql_is_slave
+  tags: [postgresql, postgresql-replication, postgresql-slave]
+
