@@ -2,7 +2,7 @@
 
 # grep exits with non-0 when value is not found. Piping to cat ensures non-0
 - name: Test firewall for slaves
-  shell: "grep {{ item }} /etc/sysconfig/iptables" | cat
+  shell: "grep {{ item }} /etc/sysconfig/iptables | cat"
   register: test_grep
   with_items: "{{ postgresql_streaming_slaves }}"
 
