@@ -1,18 +1,18 @@
 # file: tasks/configure-master-firewall.yml
 
 # grep exits with non-0 when value is not found. Piping to cat ensures non-0
-- name: Test firewall for slaves
-  shell: "grep {{ item }} /etc/sysconfig/iptables | cat"
-  register: test_grep
-  with_items: "{{ postgresql_streaming_slaves }}"
+#- name: Test firewall for slaves
+#  shell: "grep {{ item }} /etc/sysconfig/iptables | cat"
+#  register: test_grep
+#  with_items: "{{ postgresql_streaming_slaves }}"
 
 - name: Open firewall for slaves
   lineinfile:
     destfile: "/etc/sysconfig/iptables"
-    line: "-A INPUT -p tcp -s {{ item.item }} --dport 5432 -j ACCEPT"
+    line: "-A INPUT -p tcp -s {{ item }} --dport 5432 -j ACCEPT"
     insertbefore: "-A INPUT -j DROP"
-  when: item.stdout != ""
-  with_items: "{{ test_grep.results }}"
+  #when: item.stdout != "" # ideally: use slaves - {greps in previous step}
+  with_items: "{{ postgresql_streaming_slaves }}"
   become: yes
 
 #- name: Debug output of greps
