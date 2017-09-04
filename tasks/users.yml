@@ -18,3 +18,6 @@
     password: "{{ postgresql_streaming_user.pass }}"
     role_attr_flags: REPLICATION
   when: postgresql_streaming_user and postgresql_streaming_user|length > 0
+
+- name: "Stage 3: restart postgresql service"
+  service: name="{{ postgresql_service_name }}" state=restarted
